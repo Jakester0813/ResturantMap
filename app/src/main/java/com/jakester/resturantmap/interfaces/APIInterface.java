@@ -11,6 +11,6 @@ import retrofit2.http.Query;
  */
 
 public interface APIInterface {
-    @GET("maps/api/place/nearbysearch/json?key=AIzaSyB-bpw0ollWA5AKpT11Y2CL2qPFs4kC_dk&location=37.7749,122.4194&radius=50&type=restaurant")
+    @GET("maps/api/place/nearbysearch/json?location=37.7749,-122.431297&radius=500&types=resturants&key=AIzaSyB-bpw0ollWA5AKpT11Y2CL2qPFs4kC_dk")
     Call<GetPlacesResponse> getPlaces();
 }

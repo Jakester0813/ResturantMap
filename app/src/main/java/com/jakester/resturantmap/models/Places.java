@@ -9,7 +9,7 @@ public class Places {
 
     @SerializedName("geometry")
     @Expose
-    Location mLocation;
+    Geometry mGeometry;
 
     @SerializedName("icon")
     @Expose
@@ -41,10 +41,10 @@ public class Places {
     String mAddress;
 
 
-    public void setLocation(Location pLocation) {this.mLocation = pLocation;}
+    public void setGeometry(Geometry pLocation) {this.mGeometry = pLocation;}
 
-    public Location getLocation() {
-        return mLocation;
+    public Geometry getGeometry() {
+        return mGeometry;
     }
 
     public String getIcon() {
