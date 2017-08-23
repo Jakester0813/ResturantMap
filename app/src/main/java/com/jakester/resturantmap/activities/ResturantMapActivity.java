@@ -1,8 +1,8 @@
 package com.jakester.resturantmap.activities;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -13,13 +13,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jakester.resturantmap.R;
-import com.jakester.resturantmap.interfaces.APIInterface;
+import com.jakester.resturantmap.interfaces.PlaceSearchInterface;
 import com.jakester.resturantmap.models.GetPlacesResponse;
 import com.jakester.resturantmap.models.Location;
 import com.jakester.resturantmap.models.Places;
-import com.jakester.resturantmap.util.APIUtility;
+import com.jakester.resturantmap.util.PlacesUtility;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,15 +29,15 @@ import retrofit2.Response;
 public class ResturantMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
-    private APIInterface mInterface;
-    private List<Marker> mMarkers;
+    private PlaceSearchInterface mInterface;
+    private HashMap<Marker,Places> mMarkers;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resturant_map);
-        mMarkers = new ArrayList<Marker>();
+        mMarkers = new HashMap<>();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -64,7 +64,7 @@ public class ResturantMapActivity extends FragmentActivity implements OnMapReady
     }
 
     public void loadPlaces(final GoogleMap mMap) {
-        mInterface = APIUtility.getPlacesService();
+        mInterface = PlacesUtility.getPlacesService();
         mInterface.getPlaces().enqueue(new Callback<GetPlacesResponse>() {
             @Override
             public void onResponse(Call<GetPlacesResponse> call, Response<GetPlacesResponse> response) {
@@ -78,7 +78,7 @@ public class ResturantMapActivity extends FragmentActivity implements OnMapReady
                         loc = place.getGeometry().getLocation();
                         location = new LatLng(loc.getLatitude(), loc.getLongitude());
                         marker = mMap.addMarker(new MarkerOptions().position(location).title(place.getName()));
-                        mMarkers.add(marker);
+                        mMarkers.put(marker, place);
                     }
                     loc = places.get(1).getGeometry().getLocation();
                     location = new LatLng(loc.getLatitude(), loc.getLongitude());
@@ -115,10 +115,11 @@ public class ResturantMapActivity extends FragmentActivity implements OnMapReady
     public boolean onMarkerClick(final Marker marker) {
 
         // Retrieve the data from the marker.
+        Places place = mMarkers.get(marker);
+        Intent resturantIntent = new Intent(ResturantMapActivity.this, ResturantActivity.class);
+        resturantIntent.putExtra("place", place);
+        startActivity(resturantIntent);
 
-        // Return false to indicate that we have not consumed the event and that we wish
-        // for the default behavior to occur (which is for the camera to move such that the
-        // marker is centered and for the marker's info window to open, if it has one).
         return false;
     }
 }

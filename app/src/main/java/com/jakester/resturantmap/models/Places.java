@@ -1,11 +1,14 @@
 package com.jakester.resturantmap.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Places {
+public class Places implements Parcelable {
 
     @SerializedName("geometry")
     @Expose
@@ -23,11 +26,6 @@ public class Places {
     @Expose
     String mName;
 
-    @SerializedName("photos")
-    @Expose
-    List<Photo> mPhotos;
-
-
     @SerializedName("place_id")
     @Expose
     String mPlaceId;
@@ -40,6 +38,18 @@ public class Places {
     @Expose
     String mAddress;
 
+
+    public static final Creator<Places> CREATOR = new Creator<Places>() {
+        @Override
+        public Places createFromParcel(Parcel in) {
+            return new Places(in);
+        }
+
+        @Override
+        public Places[] newArray(int size) {
+            return new Places[size];
+        }
+    };
 
     public void setGeometry(Geometry pLocation) {this.mGeometry = pLocation;}
 
@@ -71,13 +81,7 @@ public class Places {
         mName = name;
     }
 
-    public void setPhotos(List<Photo> photos) {
-        mPhotos = photos;
-    }
-
-    public List<Photo> getPhotos() {return mPhotos;}
-
-    public String setPlaceId() {
+    public String getPlaceId() {
         return mPlaceId;
     }
 
@@ -89,8 +93,8 @@ public class Places {
         return mRating;
     }
 
-    public void setRating(double perPage) {
-        mRating = perPage;
+    public void setRating(double rating) {
+        mRating = rating;
     }
 
     public String getAddress() {
@@ -99,5 +103,31 @@ public class Places {
 
     public void setAddress(String address) {
         mAddress = address;
+    }
+
+    protected Places(Parcel in){
+        setGeometry((Geometry) in.readParcelable(Geometry.class.getClassLoader()));
+        setIcon(in.readString());
+        setId(in.readString());
+        setName(in.readString());
+        setPlaceId(in.readString());
+        setRating(in.readDouble());
+        setAddress(in.readString());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeParcelable(mGeometry, i);
+        parcel.writeString(mIcon);
+        parcel.writeString(mId);
+        parcel.writeString(mName);
+        parcel.writeString(mPlaceId);
+        parcel.writeDouble(mRating);
+        parcel.writeString(mAddress);
     }
 }
