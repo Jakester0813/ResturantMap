@@ -119,7 +119,6 @@ public class ResturantMapActivity extends FragmentActivity implements OnMapReady
         Intent resturantIntent = new Intent(ResturantMapActivity.this, ResturantActivity.class);
         resturantIntent.putExtra("place", place);
         startActivity(resturantIntent);
-
         return false;
     }
 }
